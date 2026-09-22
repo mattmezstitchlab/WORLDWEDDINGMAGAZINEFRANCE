@@ -1,0 +1,1511 @@
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Wedding Magazine — Édition France</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090D;
+    --bg-2:#0d0f16;
+    --panel:rgba(14,16,22,0.86);
+    --panel-solid:#0e1016;
+    --border:rgba(232,228,220,0.09);
+    --border-strong:rgba(232,228,220,0.16);
+    --text:#E8E4DC;
+    --text-2:#a8a49c;
+    --muted:#7a766f;
+    --dim:#4a4844;
+    --gold:#D4A855;
+    --gold-soft:#e8c98a;
+    --serif:'Playfair Display', Georgia, 'Times New Roman', serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    --mono:'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --c-image:#C77D6D;
+    --c-video:#4A6FA5;
+    --c-audio:#7B6BA8;
+    --c-music:#8E7CC3;
+    --c-place:#5F8A6E;
+    --c-person:#D4A855;
+    --c-pro:#B85555;
+    --c-event:#D6704E;
+    --c-doc:#8B8B8B;
+    --c-relation:#7EC8E3;
+    --c-validated:#6BBF7B;
+    --c-confirm:#E0C548;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:rgba(232,228,220,0.14);border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(232,228,220,0.24);}
+
+  /* ------------ CANVAS ------------ */
+  #canvas-wrap{position:fixed;inset:0;z-index:1;}
+  #canvas-wrap canvas{display:block;width:100%;height:100%;}
+
+  /* ------------ HEADER ------------ */
+  header{
+    position:fixed;top:0;left:0;right:0;height:62px;z-index:20;
+    display:flex;align-items:center;gap:24px;padding:0 22px;
+    background:linear-gradient(180deg, rgba(8,9,13,0.96) 0%, rgba(8,9,13,0.72) 70%, rgba(8,9,13,0) 100%);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    pointer-events:none;
+  }
+  header > *{pointer-events:auto;}
+  .brand{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#D4A855 0%,#8B6F47 100%);
+    display:grid;place-items:center;
+    font-family:var(--serif);font-weight:900;font-size:17px;color:#0a0c10;
+    box-shadow:0 0 24px rgba(212,168,85,0.28);
+  }
+  .brand-title{
+    font-family:var(--serif);font-weight:700;font-size:13.5px;letter-spacing:0.03em;
+    line-height:1.15;
+  }
+  .brand-sub{
+    font-size:9.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
+    margin-top:2px;font-weight:500;
+  }
+  .brand-sub .demo{
+    color:#9C7BB8;font-family:var(--mono);letter-spacing:0.1em;
+  }
+
+  nav.views{
+    display:flex;gap:2px;margin-left:auto;
+    background:rgba(18,20,26,0.6);border:1px solid var(--border);border-radius:6px;
+    padding:3px;
+  }
+  nav.views button{
+    padding:7px 13px;border-radius:4px;font-size:10.5px;font-weight:500;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);
+    transition:color .2s, background .2s;
+    white-space:nowrap;
+  }
+  nav.views button:hover{color:var(--text-2);}
+  nav.views button.active{
+    color:#0a0c10;background:var(--gold);
+    box-shadow:0 0 16px rgba(212,168,85,0.25);
+  }
+  .stats{display:flex;gap:20px;flex-shrink:0;}
+  .stats > div{display:flex;flex-direction:column;align-items:flex-end;}
+  .stats strong{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--gold-soft);line-height:1;}
+  .stats span{font-size:8.5px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);margin-top:3px;}
+
+  /* ------------ INSPECTOR ------------ */
+  #inspector{
+    position:fixed;top:78px;right:22px;bottom:22px;width:360px;z-index:15;
+    background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:10px;
+    display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,0.55);
+    transition:transform .4s cubic-bezier(.2,.9,.3,1), opacity .3s;
+  }
+  #inspector.hidden{transform:translateX(calc(100% + 30px));opacity:0;pointer-events:none;}
+  .insp-head{
+    padding:16px 18px;border-bottom:1px solid var(--border);
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  }
+  .insp-head .kicker{
+    font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);
+    margin-bottom:5px;font-weight:500;
+  }
+  .insp-head h2{
+    font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.15;
+    letter-spacing:-0.01em;
+  }
+  .insp-body{padding:16px 18px 22px;overflow-y:auto;flex:1;}
+
+  .badge{
+    display:inline-block;font-family:var(--mono);font-size:8.5px;
+    letter-spacing:0.14em;text-transform:uppercase;padding:3px 7px;border-radius:2px;
+    background:rgba(156,123,184,0.14);color:#b8a3d4;border:1px solid rgba(156,123,184,0.3);
+  }
+  .badge.gold{background:rgba(212,168,85,0.12);color:var(--gold-soft);border-color:rgba(212,168,85,0.3);}
+  .badge.green{background:rgba(107,191,123,0.12);color:#9dd4a8;border-color:rgba(107,191,123,0.3);}
+
+  .insp-meta{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;
+    margin:14px 0 16px;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  }
+  .insp-meta > div{display:flex;flex-direction:column;}
+  .insp-meta .lbl{font-size:8.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+  .insp-meta .val{font-family:var(--serif);font-size:13px;color:var(--text);}
+  .insp-meta .val.mono{font-family:var(--mono);font-size:11px;}
+
+  .insp-lede{
+    font-family:var(--serif);font-size:14px;line-height:1.55;font-style:italic;
+    color:var(--text-2);margin-bottom:16px;
+    padding-left:12px;border-left:2px solid var(--gold);
+  }
+  .insp-para{
+    font-size:12.5px;line-height:1.7;color:var(--text-2);margin-bottom:11px;
+  }
+  .insp-para:first-letter{
+    font-family:var(--serif);font-size:32px;font-weight:700;float:left;
+    line-height:.85;padding:4px 8px 0 0;color:var(--gold-soft);
+  }
+  .section-label{
+    font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);
+    margin:20px 0 10px;font-weight:600;
+  }
+  .hour-list{display:grid;grid-template-columns:1fr;gap:1px;margin-top:4px;}
+  .hour-row{
+    display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;
+    cursor:pointer;transition:background .15s;border-left:2px solid transparent;
+  }
+  .hour-row:hover{background:rgba(232,228,220,0.04);}
+  .hour-row.active{background:rgba(212,168,85,0.1);border-left-color:var(--gold);}
+  .hour-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .hour-time{font-family:var(--mono);font-size:10px;color:var(--muted);width:38px;flex-shrink:0;}
+  .hour-title{font-size:11.5px;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hour-row.active .hour-title{color:var(--gold-soft);}
+
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:14px;margin:3px 4px 3px 0;
+    font-size:10.5px;background:rgba(232,228,220,0.05);border:1px solid var(--border);
+    color:var(--text-2);
+  }
+  .chip .dot{width:5px;height:5px;border-radius:50%;}
+
+  .rel-list{display:flex;flex-direction:column;gap:6px;}
+  .rel-item{
+    display:flex;align-items:center;gap:9px;padding:8px 10px;
+    background:rgba(232,228,220,0.03);border:1px solid var(--border);border-radius:5px;
+    font-size:11px;
+  }
+  .rel-item .from{color:var(--muted);font-size:10px;font-family:var(--mono);}
+  .rel-item .arrow{color:var(--gold);font-size:11px;}
+  .rel-item .to{color:var(--text-2);}
+
+  /* ------------ LEGEND ------------ */
+  #legend{
+    position:fixed;left:22px;bottom:22px;z-index:15;
+    background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--border);border-radius:8px;padding:12px 14px;
+    max-width:320px;
+    transition:opacity .3s;
+  }
+  #legend.hidden{opacity:0;pointer-events:none;}
+  .legend-title{
+    font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
+    margin-bottom:9px;font-weight:600;
+  }
+  .legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--text-2);}
+  .legend-swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+  /* ------------ OVERLAY VIEWS ------------ */
+  #overlay{
+    position:fixed;inset:0;z-index:12;display:none;
+    background:radial-gradient(ellipse at 50% 40%, #0d1018 0%, #06070b 70%);
+    padding:82px 26px 26px;
+    overflow-y:auto;
+  }
+  #overlay.active{display:block;}
+  #overlay.with-inspector{padding-right:400px;}
+
+  /* MAP */
+  .map-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;height:100%;align-items:start;}
+  .map-panel{position:relative;background:rgba(14,16,22,0.5);border:1px solid var(--border);border-radius:10px;padding:22px;overflow:hidden;}
+  .map-panel svg{width:100%;height:auto;display:block;max-height:64vh;}
+  .map-title{font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:4px;letter-spacing:-0.01em;}
+  .map-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+  .city-dot{cursor:pointer;transition:r .2s, opacity .2s;}
+  .city-dot:hover{r:9;}
+  .city-hit{cursor:pointer;fill:transparent;}
+  .city-label{font-family:var(--serif);font-size:10.5px;fill:var(--text-2);pointer-events:none;}
+
+  /* TIMELINE */
+  .tm-wrap{padding:10px 0;}
+  .tm-head{margin-bottom:26px;}
+  .tm-head h2{font-family:var(--serif);font-size:28px;font-weight:700;letter-spacing:-0.02em;}
+  .tm-head p{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+  .tm-grid{display:grid;grid-template-columns:repeat(24, minmax(72px,1fr));gap:8px;overflow-x:auto;padding-bottom:12px;}
+  .tm-hour{
+    background:rgba(14,16,22,0.6);border:1px solid var(--border);border-radius:6px;
+    padding:12px 10px;min-height:230px;cursor:pointer;transition:all .2s;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .tm-hour:hover{border-color:var(--border-strong);transform:translateY(-2px);}
+  .tm-hour.active{border-color:var(--gold);background:rgba(212,168,85,0.06);}
+  .tm-time{font-family:var(--mono);font-size:11px;color:var(--muted);}
+  .tm-dot{width:10px;height:10px;border-radius:50%;}
+  .tm-title{font-family:var(--serif);font-size:12.5px;line-height:1.3;color:var(--text);}
+  .tm-scene{font-size:10.5px;line-height:1.5;color:var(--muted);}
+
+  /* RELATIONS */
+  .rel-wrap{display:grid;grid-template-columns:1fr;gap:24px;}
+  .rel-head h2{font-family:var(--serif);font-size:28px;font-weight:700;letter-spacing:-0.02em;}
+  .rel-head p{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+  .rel-diagram{background:rgba(14,16,22,0.5);border:1px solid var(--border);border-radius:10px;padding:24px;}
+  .rel-node text{font-family:var(--sans);font-size:10px;fill:var(--text-2);}
+  .rel-node circle{transition:all .2s;cursor:pointer;}
+  .rel-node circle:hover{stroke-width:3;}
+
+  /* MAGAZINE */
+  .mag-wrap{max-width:1180px;margin:0 auto;}
+  .mag-spread{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:#f4efe6;color:#1a1816;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    border-radius:2px;overflow:hidden;
+    aspect-ratio:1.55/1;
+  }
+  .mag-page{padding:44px 46px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+  .mag-page.right{border-left:1px solid rgba(26,24,22,0.08);}
+  .mag-kicker{font-size:9.5px;letter-spacing:0.3em;text-transform:uppercase;color:#8a7d68;margin-bottom:16px;font-weight:600;}
+  .mag-title{font-family:var(--serif);font-size:42px;font-weight:900;line-height:1.02;letter-spacing:-0.025em;color:#171512;margin-bottom:14px;}
+  .mag-sub{font-family:var(--serif);font-size:16px;font-style:italic;color:#5a5145;margin-bottom:22px;line-height:1.4;}
+  .mag-hero{
+    flex:1;min-height:0;border-radius:1px;
+    position:relative;overflow:hidden;
+    background-size:cover;background-position:center;
+  }
+  .mag-hero::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(10,12,18,0.05) 0%, rgba(10,12,18,0.55) 100%);
+  }
+  .mag-hero-label{
+    position:absolute;bottom:16px;left:18px;right:18px;
+    font-family:var(--serif);font-size:17px;font-style:italic;color:#f4efe6;z-index:2;
+    line-height:1.3;
+  }
+  .mag-hero-num{
+    position:absolute;top:16px;left:18px;z-index:2;
+    font-family:var(--mono);font-size:10px;letter-spacing:0.2em;color:rgba(244,239,230,0.85);
+  }
+  .mag-body{font-size:12.5px;line-height:1.75;color:#3a342c;font-family:Georgia,serif;}
+  .mag-body p{margin-bottom:13px;}
+  .mag-body p:first-of-type::first-letter{
+    font-family:var(--serif);font-size:52px;font-weight:900;float:left;
+    line-height:.82;padding:6px 10px 0 0;color:#b8912f;
+  }
+  .mag-caption{
+    margin-top:auto;padding-top:16px;border-top:1px solid rgba(26,24,22,0.1);
+    font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8a7d68;
+    display:flex;justify-content:space-between;
+  }
+  .mag-quote{
+    font-family:var(--serif);font-size:19px;font-style:italic;line-height:1.35;
+    color:#5a5145;padding:16px 0 16px 22px;border-left:3px solid #b8912f;margin-bottom:18px;
+  }
+
+  /* ------------ TOOLTIP ------------ */
+  #tooltip{
+    position:fixed;z-index:30;pointer-events:none;
+    background:rgba(10,12,16,0.92);border:1px solid var(--border-strong);
+    border-radius:6px;padding:8px 12px;font-size:11px;
+    opacity:0;transition:opacity .15s;
+    backdrop-filter:blur(8px);
+    max-width:260px;
+  }
+  #tooltip.show{opacity:1;}
+  #tooltip .tt-time{font-family:var(--mono);font-size:9.5px;color:var(--gold);letter-spacing:0.1em;}
+  #tooltip .tt-title{font-family:var(--serif);font-size:12.5px;margin-top:2px;line-height:1.3;}
+  #tooltip .tt-city{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.06em;}
+
+  /* ------------ LOADING ------------ */
+  #loading{
+    position:fixed;inset:0;z-index:100;background:var(--bg);
+    display:grid;place-items:center;
+    transition:opacity .7s;
+  }
+  #loading.hide{opacity:0;pointer-events:none;}
+  .load-mark{
+    font-family:var(--serif);font-weight:900;font-size:44px;
+    letter-spacing:0.1em;color:var(--gold);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  .load-sub{
+    margin-top:12px;font-size:9.5px;letter-spacing:0.34em;text-transform:uppercase;color:var(--muted);
+    text-align:center;
+  }
+  @keyframes pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+  /* ------------ RESPONSIVE ------------ */
+  @media (max-width: 1100px){
+    #inspector{width:320px;}
+    .mag-spread{grid-template-columns:1fr;aspect-ratio:auto;}
+    .mag-page.right{border-left:none;border-top:1px solid rgba(26,24,22,0.08);}
+    .map-wrap{grid-template-columns:1fr;}
+    #overlay.with-inspector{padding-right:26px;}
+  }
+  @media (max-width: 760px){
+    header{gap:12px;padding:0 12px;}
+    .brand-title{font-size:11.5px;}
+    .brand-sub{font-size:8px;}
+    nav.views button{padding:6px 9px;font-size:9px;letter-spacing:0.08em;}
+    .stats{display:none;}
+    #inspector{right:12px;left:12px;width:auto;top:72px;bottom:12px;}
+    #legend{left:12px;bottom:12px;max-width:calc(100% - 24px);}
+    .mag-title{font-size:30px;}
+    .mag-page{padding:28px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div>
+    <div class="load-mark">W</div>
+    <div class="load-sub">World Wedding Magazine</div>
+  </div>
+</div>
+
+<div id="canvas-wrap"></div>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">W</div>
+    <div>
+      <div class="brand-title">WORLD WEDDING MAGAZINE</div>
+      <div class="brand-sub">Édition France · 2025 · <span class="demo">DEMO</span></div>
+    </div>
+  </div>
+  <nav class="views">
+    <button data-view="3d" class="active">3D</button>
+    <button data-view="grid">Grille</button>
+    <button data-view="timeline">Timeline</button>
+    <button data-view="map">Carte</button>
+    <button data-view="relations">Relations</button>
+    <button data-view="magazine">Magazine</button>
+  </nav>
+  <div class="stats">
+    <div><strong>8 760</strong><span>positions</span></div>
+    <div><strong>12</strong><span>mariages</span></div>
+    <div><strong>365</strong><span>jours</span></div>
+  </div>
+</header>
+
+<aside id="inspector">
+  <div class="insp-head">
+    <div>
+      <div class="kicker" id="insp-kicker">Édition France · 2025</div>
+      <h2 id="insp-title">World Wedding Magazine</h2>
+    </div>
+    <span class="badge" id="insp-badge">DEMO</span>
+  </div>
+  <div class="insp-body" id="insp-body"></div>
+</aside>
+
+<div id="legend">
+  <div class="legend-title">Code DMC · Types de contenu</div>
+  <div class="legend-grid" id="legend-grid"></div>
+</div>
+
+<div id="overlay"></div>
+
+<div id="tooltip">
+  <div class="tt-time" id="tt-time"></div>
+  <div class="tt-title" id="tt-title"></div>
+  <div class="tt-city" id="tt-city"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* =========================================================
+   DATA MODEL — SINGLE SOURCE OF TRUTH
+   World → Edition → Year → Month → Day → Hour → Scene
+   ========================================================= */
+
+const DMC = {
+  text:'#E8E4DC', image:'#C77D6D', video:'#4A6FA5', audio:'#7B6BA8',
+  music:'#8E7CC3', place:'#5F8A6E', person:'#D4A855', professional:'#B85555',
+  event:'#D6704E', document:'#8B8B8B', relation:'#7EC8E3',
+  validated:'#6BBF7B', toConfirm:'#E0C548'
+};
+
+const TYPE_COLOR = {
+  preparation: DMC.person,
+  person:      DMC.person,
+  professional:DMC.professional,
+  event:       DMC.event,
+  image:       DMC.image,
+  place:       DMC.place,
+  music:       DMC.music,
+  relation:    DMC.relation,
+  document:    DMC.document,
+  video:       DMC.video
+};
+
+const MONTHS = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+const DAYS_IN_MONTH = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+const HOUR_TEMPLATES = [
+  { type:'preparation', title:'La veille, à la nuit close', scene:'Chambre silencieuse. Les derniers préparatifs.' },
+  { type:'preparation', title:'Le silence du lieu', scene:'Le domaine dort. Les premières lueurs.' },
+  { type:'preparation', title:'Veille silencieuse', scene:'Les songes. La maison qui respire.' },
+  { type:'preparation', title:'Le dernier rêve', scene:'Avant le grand jour.' },
+  { type:'preparation', title:'Aurore', scene:'Le ciel se teinte. Les mariés se lèvent.' },
+  { type:'professional', title:'Arrivée des prestataires', scene:'Photographe, fleuriste, traiteur.' },
+  { type:'preparation', title:'Petit-déjeuner des mariés', scene:'Un instant suspendu, seul à seul.' },
+  { type:'person', title:'Coiffure & maquillage', scene:'Les mains expertes. Le miroir.' },
+  { type:'person', title:'Habillage', scene:'La robe, le costume. Les boutons un à un.' },
+  { type:'image', title:'Portraits intimes', scene:'Les premières images. La lumière douce.' },
+  { type:'event', title:'Arrivée des invités', scene:'La cour se remplit. Les retrouvailles.' },
+  { type:'event', title:'Cérémonie civile', scene:'Les signatures. Les mots officiels.' },
+  { type:'event', title:'Cérémonie principale', scene:'Le serment. L\'instant de bascule.' },
+  { type:'image', title:'Cocktail', scene:'Les bulles. Les rires au soleil.' },
+  { type:'event', title:'Discours à ciel ouvert', scene:'Les voix qui se brisent. Les rires.' },
+  { type:'place', title:'Dîner — première partie', scene:'L\'entrée. La table dressée.' },
+  { type:'place', title:'Dîner — deuxième partie', scene:'Le plat. Les conversations.' },
+  { type:'event', title:'Discours & pièce montée', scene:'Les mots. La découpe du gâteau.' },
+  { type:'image', title:'Golden hour', scene:'La lumière d\'or. Les promenades à deux.' },
+  { type:'music', title:'Première danse', scene:'Les notes. Le premier pas.' },
+  { type:'music', title:'La piste', scene:'Les corps en mouvement.' },
+  { type:'music', title:'La fête continue', scene:'La nuit. Les derniers refrains.' },
+  { type:'relation', title:'Derniers instants à deux', scene:'Le calme revenu. Les mots du soir.' },
+  { type:'document', title:'Sortie de nuit', scene:'Le seuil. La fin d\'un monde.' }
+];
+
+const WEDDINGS_RAW = [
+  { id:'WW-DEMO-01', month:0,  day:18, city:'Lyon',      region:'Auvergne-Rhône-Alpes', lat:45.7640, lon:4.8357,
+    title:'Un hiver qui commence', tagline:'Un mariage local, au cœur du mois le plus silencieux de l\'année.',
+    palette:'#8B6F47' },
+  { id:'WW-DEMO-02', month:1,  day:22, city:'Paris',     region:'Île-de-France',        lat:48.8566, lon:2.3522,
+    title:'La ville, la nuit', tagline:'Un mariage parisien entre pierres haussmanniennes et lumières de février.',
+    palette:'#4A6FA5' },
+  { id:'WW-DEMO-03', month:2,  day:15, city:'Annecy',    region:'Haute-Savoie',         lat:45.8992, lon:6.1294,
+    title:'Les eaux claires', tagline:'Un mariage au bord du lac, entre montagnes et premières chaleurs.',
+    palette:'#5F8A6E' },
+  { id:'WW-DEMO-04', month:3,  day:12, city:'Aix-en-Provence', region:'Provence',        lat:43.5297, lon:5.4474,
+    title:'Le printemps provençal', tagline:'Un mariage sous les platanes, entre lavande et calcaire.',
+    palette:'#C77D6D' },
+  { id:'WW-DEMO-05', month:4,  day:24, city:'Cancale',   region:'Bretagne',             lat:48.6761, lon:-1.8528,
+    title:'La marée haute', tagline:'Un mariage breton face à la mer, entre granit et embruns.',
+    palette:'#4A6FA5' },
+  { id:'WW-DEMO-06', month:5,  day:14, city:'Porto-Vecchio', region:'Corse',            lat:41.5914, lon:9.2793,
+    title:'L\'île intérieure', tagline:'Un mariage corse, entre maquis, granit et lumière méditerranéenne.',
+    palette:'#D6704E' },
+  { id:'WW-DEMO-07', month:6,  day:5,  city:'Chambord',  region:'Val de Loire',         lat:47.6161, lon:1.5170,
+    title:'Le domaine', tagline:'Un mariage de château, entre pierres blanches et jardins à la française.',
+    palette:'#D4A855' },
+  { id:'WW-DEMO-08', month:7,  day:23, city:'Biarritz',  region:'Pays basque',          lat:43.4832, lon:-1.5586,
+    title:'L\'Atlantique', tagline:'Un mariage basque, entre océan, pelote et rouge profond.',
+    palette:'#B85555' },
+  { id:'WW-DEMO-09', month:8,  day:6,  city:'Bordeaux',  region:'Gironde',              lat:44.8378, lon:-0.5792,
+    title:'Le vignoble', tagline:'Un mariage dans les vignes, entre pierres dorées et vendanges proches.',
+    palette:'#8B6F47' },
+  { id:'WW-DEMO-10', month:9,  day:11, city:'Colmar',    region:'Alsace',               lat:48.0794, lon:7.3585,
+    title:'Les vendanges d\'or', tagline:'Un mariage alsacien, entre colombages, riesling et forêt d\'automne.',
+    palette:'#D6704E' },
+  { id:'WW-DEMO-11', month:10, day:8,  city:'Toulouse',  region:'Occitanie',            lat:43.6047, lon:1.4442,
+    title:'La ville rose', tagline:'Un mariage d\'arrière-saison, entre brique et Garonne.',
+    palette:'#C77D6D' },
+  { id:'WW-DEMO-12', month:11, day:20, city:'Courchevel', region:'Savoie',              lat:45.4154, lon:6.6345,
+    title:'La neige et le feu', tagline:'Un mariage d\'altitude, entre sommets, feu de bois et nuit longue.',
+    palette:'#7EC8E3' }
+];
+
+/* ---- Generate full editorial scenes ---- */
+
+function buildScenes(w){
+  return HOUR_TEMPLATES.map((t,h)=>{
+    const isNight = h < 6 || h >= 22;
+    const timeLabel = String(h).padStart(2,'0') + 'h00';
+    return {
+      id: `${w.id}-H${String(h).padStart(2,'0')}`,
+      hour: h,
+      time: timeLabel,
+      type: t.type,
+      su: `${w.city.toUpperCase()} · ${w.region.toUpperCase()} · ${timeLabel}`,
+      title: t.title,
+      subtitle: `${w.title} · ${MONTHS[w.month]} · DEMO`,
+      chapo: t.scene,
+      paragraphs: [
+        `${w.city} ce jour-là respire autrement. La lumière de ${MONTHS[w.month].toLowerCase()} compose un décor qui n'appartient qu'à cette heure — ${h}h — entre le récit officiel et ce qui ne se photographie pas.`,
+        `Les équipes sont en place. Le photographe cherche l'angle, le traiteur surveille la cuisine, le musicien règle son instrument. Rien n'est joué, tout est à écrire.`,
+        `Cette séquence est une unité éditoriale complète : un lieu, un moment, des personnes, des professionnels, une intention. Le magazine la composera à sa façon — demain, dans une autre lumière.`
+      ],
+      place: {
+        name: w.city, region: w.region, country:'France',
+        lat: w.lat, lon: w.lon, type:'city',
+        verificationStatus:'DEMO', source:'WW-DEMO'
+      },
+      professionals: [
+        { type:'photographer', name:'Photographe', code:DMC.image },
+        { type:'wedding-planner', name:'Wedding Planner', code:DMC.professional },
+        { type:'caterer', name:'Traiteur', code:DMC.place },
+        { type:'florist', name:'Fleuriste', code:DMC.person }
+      ].map(p=>({...p, id: `${w.id}-${p.type}`, verificationStatus:'DEMO', source:'WW-DEMO'})),
+      blocks: [
+        { id: `${w.id}-H${h}-B1`, type:'text', content:t.scene, position:'main', size:'half', metadata:{}, source:'WW-DEMO', relations:[] },
+        { id: `${w.id}-H${h}-B2`, type:'image', content:{ alt:`${w.city} — ${t.title}`, illustrative:true }, position:'side', size:'half', metadata:{ sourceType:'ILLUSTRATIVE' }, source:'PEXELS', relations:[] },
+        { id: `${w.id}-H${h}-B3`, type:'map', content:{ lat:w.lat, lon:w.lon }, position:'foot', size:'half', metadata:{}, source:'WW-DEMO', relations:[] }
+      ],
+      isNight,
+      relations: [
+        { from:`${w.id}`, to:`${w.city}`, kind:'geographic' },
+        { from:`${w.id}`, to:`${w.city}-photographer`, kind:'professional' },
+        { from:`${w.id}-H${h}`, to:`${w.city}`, kind:'scene-place' }
+      ]
+    };
+  });
+}
+
+const WEDDINGS = WEDDINGS_RAW.map(w => ({
+  ...w,
+  demo: true,
+  verificationStatus: 'DEMO',
+  source: 'WW-DEMO-2025',
+  monthName: MONTHS[w.month],
+  date: `${String(w.day).padStart(2,'0')} ${MONTHS[w.month]} 2025`,
+  scenes: buildScenes(w)
+}));
+
+/* =========================================================
+   APPLICATION STATE
+   ========================================================= */
+
+const state = {
+  view: '3d',
+  selectedWedding: null,
+  selectedHour: null,
+  hovered: null
+};
+
+/* =========================================================
+   THREE.JS SCENE
+   ========================================================= */
+
+const canvasWrap = document.getElementById('canvas-wrap');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x08090d);
+scene.fog = new THREE.FogExp2(0x08090d, 0.0075);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 600);
+camera.position.set(48, 34, 48);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+canvasWrap.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.055;
+controls.target.set(0, 8, 0);
+controls.minDistance = 14;
+controls.maxDistance = 150;
+controls.maxPolarAngle = Math.PI * 0.92;
+controls.enablePan = true;
+controls.panSpeed = 0.7;
+
+/* ---- Lights ---- */
+const hemi = new THREE.HemisphereLight(0x8090b8, 0x0a0c14, 0.55);
+scene.add(hemi);
+
+const key = new THREE.DirectionalLight(0xfff0d8, 1.5);
+key.position.set(38, 62, 26);
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0x6c8bc4, 0.65);
+fill.position.set(-42, 24, -30);
+scene.add(fill);
+
+const rim = new THREE.PointLight(0xd4a855, 1.6, 220, 2.0);
+rim.position.set(0, 34, 0);
+scene.add(rim);
+
+/* ---- Stars ---- */
+(() => {
+  const N = 1600;
+  const g = new THREE.BufferGeometry();
+  const pos = new Float32Array(N*3);
+  for (let i=0;i<N;i++){
+    const r = 160 + Math.random()*280;
+    const th = Math.random()*Math.PI*2;
+    const ph = Math.acos(Math.random()*2-1);
+    pos[i*3]   = r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1] = Math.abs(r*Math.cos(ph))*0.7 + 24;
+    pos[i*3+2] = r*Math.sin(ph)*Math.sin(th);
+  }
+  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({
+    color:0x93a2c2, size:0.85, transparent:true, opacity:0.7,
+    sizeAttenuation:true, depthWrite:false
+  }));
+  scene.add(pts);
+})();
+
+/* ---- Floor ---- */
+(() => {
+  const g = new THREE.CircleGeometry(110, 72);
+  const m = new THREE.MeshStandardMaterial({ color:0x0e1018, roughness:1, metalness:0 });
+  const f = new THREE.Mesh(g, m);
+  f.rotation.x = -Math.PI/2;
+  f.position.y = -0.8;
+  scene.add(f);
+
+  const ringGeo = new THREE.RingGeometry(38, 62, 96);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color:0x1b2130, transparent:true, opacity:0.5, side:THREE.DoubleSide, depthWrite:false
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI/2;
+  ring.position.y = -0.75;
+  scene.add(ring);
+})();
+
+/* =========================================================
+   GRID — 365 × 24 = 8 760 positions
+   Layout: X = day of month · Z = month · Y = hour of day
+   ========================================================= */
+
+const DAY_W = 1.05;
+const MONTH_D = 3.3;
+const HOUR_H = 0.78;
+const CENTER_MONTH = 5.5;
+
+const emptyCells = [];
+const contentCells = [];
+
+WEDDINGS.forEach(w => {
+  w.cellBase = null; // computed below
+});
+
+let totalEmpty = 0;
+for (let m=0;m<12;m++) totalEmpty += DAYS_IN_MONTH[m]*24;
+
+/* ---- Empty cells (implicit structure lattice) ---- */
+{
+  const geo = new THREE.BoxGeometry(0.20, 0.20, 0.20);
+  const mat = new THREE.MeshStandardMaterial({
+    color:0x2a3244, roughness:0.7, metalness:0.25,
+    transparent:true, opacity:0.32, depthWrite:false
+  });
+  const mesh = new THREE.InstancedMesh(geo, mat, totalEmpty);
+  mesh.frustumCulled = true;
+  const dummy = new THREE.Object3D();
+  let i = 0;
+  for (let m=0;m<12;m++){
+    const days = DAYS_IN_MONTH[m];
+    for (let d=0;d<days;d++){
+      for (let h=0;h<24;h++){
+        dummy.position.set(
+          (d-(days-1)/2)*DAY_W,
+          0.5 + h*HOUR_H,
+          (m-CENTER_MONTH)*MONTH_D
+        );
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+        i++;
+      }
+    }
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+  scene.add(mesh);
+}
+
+/* ---- Content cells (12 weddings × 24 hours = 288) ---- */
+const contentMesh = (() => {
+  const geo = new THREE.BoxGeometry(0.62, 0.62, 0.62);
+  const mat = new THREE.MeshStandardMaterial({
+    roughness:0.28, metalness:0.42, emissive:0x0a0a0a, emissiveIntensity:0.6
+  });
+  const mesh = new THREE.InstancedMesh(geo, mat, 12*24);
+  const dummy = new THREE.Object3D();
+  const col = new THREE.Color();
+  let i = 0;
+
+  WEDDINGS.forEach(w => {
+    const days = DAYS_IN_MONTH[w.month];
+    const xBase = (w.day-1-(days-1)/2)*DAY_W;
+    const zBase = (w.month-CENTER_MONTH)*MONTH_D;
+    w.cellBase = new THREE.Vector3(xBase, 0, zBase);
+
+    for (let h=0;h<24;h++){
+      dummy.position.set(xBase, 0.5 + h*HOUR_H, zBase);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+      const c = TYPE_COLOR[HOUR_TEMPLATES[h].type] || DMC.text;
+      mesh.setColorAt(i, col.set(c));
+      contentCells.push({ wedding:w, hour:h, x:xBase, y:0.5+h*HOUR_H, z:zBase, instanceId:i });
+      i++;
+    }
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  scene.add(mesh);
+  return mesh;
+})();
+
+/* ---- Wedding landmark markers (labels, beams, rings) ---- */
+const labelSprites = [];
+const beamGroup = new THREE.Group();
+scene.add(beamGroup);
+
+function makeLabelSprite(text, sub, color){
+  const c = document.createElement('canvas');
+  c.width = 640; c.height = 160;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,640,160);
+  // main text
+  ctx.font = '700 52px "Playfair Display", Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.fillText(text, 320, 62);
+  // subtitle
+  ctx.font = '500 22px Inter, sans-serif';
+  ctx.fillStyle = 'rgba(232,228,220,0.7)';
+  ctx.fillText(sub, 320, 112);
+  // rule
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(240, 88); ctx.lineTo(400, 88);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.minFilter = THREE.LinearFilter;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, depthTest:false });
+  const sp = new THREE.Sprite(mat);
+  sp.scale.set(7.2, 1.8, 1);
+  return sp;
+}
+
+WEDDINGS.forEach(w => {
+  const base = w.cellBase;
+  // Vertical beam
+  const beamMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(w.palette),
+    transparent:true, opacity:0.14, depthWrite:false
+  });
+  const beam = new THREE.Mesh(new THREE.BoxGeometry(0.05, 24, 0.05), beamMat);
+  beam.position.set(base.x, 12.5, base.z);
+  beamGroup.add(beam);
+
+  // Bottom glow ring
+  const ringMat = new THREE.MeshBasicMaterial({
+    color:new THREE.Color(w.palette), transparent:true, opacity:0.4,
+    side:THREE.DoubleSide, depthWrite:false
+  });
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.15, 32), ringMat);
+  ring.rotation.x = -Math.PI/2;
+  ring.position.set(base.x, 0.15, base.z);
+  ring.userData.pulse = { wedding:w, ring };
+  beamGroup.add(ring);
+
+  // Top sprite marker
+  const sprite = makeLabelSprite(w.city, `${MONTHS[w.month]} · ${w.title}`, w.palette);
+  sprite.position.set(base.x, 25.5, base.z);
+  sprite.userData.wedding = w;
+  scene.add(sprite);
+  labelSprites.push(sprite);
+});
+
+/* ---- Selection highlight ---- */
+const selRing = new THREE.Mesh(
+  new THREE.RingGeometry(0.55, 0.75, 48),
+  new THREE.MeshBasicMaterial({
+    color:0xffffff, transparent:true, opacity:0.9,
+    side:THREE.DoubleSide, depthWrite:false, depthTest:false
+  })
+);
+selRing.visible = false;
+scene.add(selRing);
+
+const selHalo = new THREE.Mesh(
+  new THREE.SphereGeometry(1.1, 24, 18),
+  new THREE.MeshBasicMaterial({
+    color:0xD4A855, transparent:true, opacity:0.12,
+    depthWrite:false
+  })
+);
+selHalo.visible = false;
+scene.add(selHalo);
+
+/* =========================================================
+   CAMERA VIEWS
+   ========================================================= */
+
+const VIEW_PRESETS = {
+  '3d':       { pos:[48, 34, 48],  look:[0, 8, 0] },
+  'grid':     { pos:[0, 78, 0.6],  look:[0, 0, 0] },
+  'timeline': { pos:[70, 13, 0.5], look:[0, 8, 0] }
+};
+
+let camFrom = null, camT = 1;
+const camTargetPos = new THREE.Vector3(48, 34, 48);
+const camTargetLook = new THREE.Vector3(0, 8, 0);
+
+function easeInOut(t){
+  return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+}
+
+function setView(v){
+  state.view = v;
+  document.querySelectorAll('nav.views button').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === v);
+  });
+  const overlay = document.getElementById('overlay');
+  const inspector = document.getElementById('inspector');
+  const legend = document.getElementById('legend');
+
+  if (v === '3d' || v === 'grid' || v === 'timeline'){
+    overlay.classList.remove('active');
+    inspector.classList.remove('hidden');
+    // Legend only in 3d
+    legend.classList.toggle('hidden', v !== '3d');
+    if (v === 'timeline'){
+      // Show 2D timeline overlay but keep 3D behind (blurred)
+      renderTimelineOverlay();
+      overlay.classList.add('active');
+      inspector.classList.remove('hidden');
+      overlay.classList.remove('with-inspector');
+    } else {
+      // animate camera
+      const p = VIEW_PRESETS[v];
+      camFrom = { pos: camera.position.clone(), look: controls.target.clone() };
+      camTargetPos.set(p.pos[0], p.pos[1], p.pos[2]);
+      camTargetLook.set(p.look[0], p.look[1], p.look[2]);
+      camT = 0;
+    }
+  } else {
+    // Map / Relations / Magazine
+    overlay.classList.add('active');
+    overlay.classList.add('with-inspector');
+    legend.classList.add('hidden');
+    if (v === 'map') renderMapOverlay();
+    if (v === 'relations') renderRelationsOverlay();
+    if (v === 'magazine') renderMagazineOverlay();
+  }
+}
+
+/* =========================================================
+   INTERACTION — RAYCASTING
+   ========================================================= */
+
+const raycaster = new THREE.Raycaster();
+const pointerNDC = new THREE.Vector2(-10, -10);
+const tooltip = document.getElementById('tooltip');
+const ttTime = document.getElementById('tt-time');
+const ttTitle = document.getElementById('tt-title');
+const ttCity = document.getElementById('tt-city');
+
+let pointerDown = null;
+
+renderer.domElement.addEventListener('pointermove', e => {
+  pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+  pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  handleHover(e);
+});
+
+renderer.domElement.addEventListener('pointerdown', e => {
+  pointerDown = { x:e.clientX, y:e.clientY };
+});
+
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!pointerDown) return;
+  const dx = e.clientX - pointerDown.x;
+  const dy = e.clientY - pointerDown.y;
+  if (dx*dx + dy*dy < 36) handleClick(e);
+  pointerDown = null;
+});
+
+renderer.domElement.addEventListener('pointerleave', () => {
+  tooltip.classList.remove('show');
+});
+
+function handleHover(e){
+  if (state.view !== '3d' && state.view !== 'grid') return;
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObject(contentMesh);
+  if (hits.length === 0){
+    tooltip.classList.remove('show');
+    state.hovered = null;
+    document.body.style.cursor = '';
+    return;
+  }
+  const id = hits[0].instanceId;
+  const cell = contentCells[id];
+  if (!cell) return;
+  state.hovered = cell;
+  const scene = cell.wedding.scenes[cell.hour];
+  ttTime.textContent = `${cell.wedding.monthName} · ${scene.time} · DEMO`;
+  ttTitle.textContent = scene.title;
+  ttCity.textContent = `${cell.wedding.city} — ${cell.wedding.region}`;
+  tooltip.style.left = (e.clientX + 16) + 'px';
+  tooltip.style.top  = (e.clientY + 16) + 'px';
+  tooltip.classList.add('show');
+  document.body.style.cursor = 'pointer';
+}
+
+function handleClick(e){
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObject(contentMesh);
+  if (hits.length === 0){
+    // click on sprite label?
+    const spriteHits = raycaster.intersectObjects(labelSprites);
+    if (spriteHits.length){
+      selectWedding(spriteHits[0].object.userData.wedding);
+    }
+    return;
+  }
+  const cell = contentCells[hits[0].instanceId];
+  if (!cell) return;
+  selectWedding(cell.wedding);
+  selectHour(cell.hour);
+}
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+function selectWedding(w){
+  state.selectedWedding = w;
+  if (state.selectedHour === null || state.selectedHour > 23){
+    state.selectedHour = null;
+  }
+  updateSelectionVisuals();
+  renderInspector();
+  if (state.view === 'timeline') renderTimelineOverlay();
+  if (state.view === 'map') renderMapOverlay();
+  if (state.view === 'relations') renderRelationsOverlay();
+  if (state.view === 'magazine') renderMagazineOverlay();
+}
+
+function selectHour(h){
+  state.selectedHour = h;
+  updateSelectionVisuals();
+  renderInspector();
+  if (state.view === 'timeline') renderTimelineOverlay();
+  if (state.view === 'magazine') renderMagazineOverlay();
+}
+
+function updateSelectionVisuals(){
+  const w = state.selectedWedding;
+  const h = state.selectedHour;
+  if (!w || h === null){
+    selRing.visible = false;
+    selHalo.visible = false;
+    return;
+  }
+  const days = DAYS_IN_MONTH[w.month];
+  const x = (w.day-1-(days-1)/2)*DAY_W;
+  const z = (w.month-CENTER_MONTH)*MONTH_D;
+  const y = 0.5 + h*HOUR_H;
+  selRing.position.set(x, y + 0.45, z);
+  selRing.rotation.x = -Math.PI/2;
+  selHalo.position.set(x, y, z);
+  selRing.visible = true;
+  selHalo.visible = true;
+}
+
+/* =========================================================
+   INSPECTOR
+   ========================================================= */
+
+const inspKicker = document.getElementById('insp-kicker');
+const inspTitle = document.getElementById('insp-title');
+const inspBadge = document.getElementById('insp-badge');
+const inspBody = document.getElementById('insp-body');
+
+function renderInspector(){
+  const w = state.selectedWedding;
+  const h = state.selectedHour;
+
+  if (!w){
+    inspKicker.textContent = 'Édition France · 2025';
+    inspTitle.textContent = 'World Wedding Magazine';
+    inspBadge.textContent = 'DEMO';
+    inspBadge.className = 'badge';
+    inspBody.innerHTML = `
+      <div class="insp-lede">
+        Douze mariages, douze territoires, douze mois — une seule année éditoriale.
+      </div>
+      <p class="insp-para">
+        Le World Wedding Magazine est un magazine éditorial vivant consacré au mariage.
+        Sa première édition couvre la France sur 365 jours × 24 heures — soit <strong>8 760 positions éditoriales</strong>.
+      </p>
+      <p class="insp-para">
+        La grille tridimensionnelle que vous voyez à l'écran est l'atelier de construction.
+        Chaque cellule représente un lieu et un moment — une ville, un domaine, un château,
+        une plage, un restaurant, une scène de mariage.
+      </p>
+      <div class="section-label">12 mariages démonstrateurs</div>
+      <div class="hour-list" id="wedding-quick-list"></div>
+      <div class="section-label">Structure</div>
+      <div class="rel-list">
+        <div class="rel-item"><span class="from">Monde</span><span class="arrow">→</span><span class="to">Édition</span></div>
+        <div class="rel-item"><span class="from">Édition</span><span class="arrow">→</span><span class="to">Année → Mois → Jour</span></div>
+        <div class="rel-item"><span class="from">Jour</span><span class="arrow">→</span><span class="to">Heure → Scène</span></div>
+        <div class="rel-item"><span class="from">Scène</span><span class="arrow">→</span><span class="to">Blocs · Médias · Lieux · Relations</span></div>
+      </div>
+    `;
+    const list = document.getElementById('wedding-quick-list');
+    WEDDINGS.forEach(w => {
+      const row = document.createElement('div');
+      row.className = 'hour-row';
+      row.innerHTML = `
+        <span class="hour-dot" style="background:${w.palette}"></span>
+        <span class="hour-time">${MONTHS[w.month].slice(0,3)}</span>
+        <span class="hour-title">${w.city} — ${w.title}</span>
+      `;
+      row.addEventListener('click', () => {
+        selectWedding(w);
+        if (state.view !== '3d' && state.view !== 'grid') setView('3d');
+      });
+      list.appendChild(row);
+    });
+    return;
+  }
+
+  if (h === null){
+    inspKicker.textContent = `${w.monthName} · ${w.region}`;
+    inspTitle.textContent = w.title;
+    inspBadge.textContent = 'DEMO';
+    inspBadge.className = 'badge';
+    inspBody.innerHTML = `
+      <div class="insp-lede">${w.tagline}</div>
+      <div class="insp-meta">
+        <div><span class="lbl">Mois</span><span class="val">${w.monthName}</span></div>
+        <div><span class="lbl">Date</span><span class="val">${w.date}</span></div>
+        <div><span class="lbl">Ville</span><span class="val">${w.city}</span></div>
+        <div><span class="lbl">Région</span><span class="val">${w.region}</span></div>
+        <div><span class="lbl">Coordonnées</span><span class="val mono">${w.lat.toFixed(3)} · ${w.lon.toFixed(3)}</span></div>
+        <div><span class="lbl">Statut</span><span class="val mono">DEMO / FICTIONAL</span></div>
+      </div>
+      <div class="section-label">24 heures éditoriales</div>
+      <div class="hour-list" id="hour-list-${w.id}"></div>
+    `;
+    const list = document.getElementById(`hour-list-${w.id}`);
+    w.scenes.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'hour-row';
+      row.innerHTML = `
+        <span class="hour-dot" style="background:${TYPE_COLOR[s.type]||'#888'}"></span>
+        <span class="hour-time">${s.time}</span>
+        <span class="hour-title">${s.title}</span>
+      `;
+      row.addEventListener('click', () => selectHour(s.hour));
+      list.appendChild(row);
+    });
+    return;
+  }
+
+  const sc = w.scenes[h];
+  inspKicker.textContent = sc.su;
+  inspTitle.textContent = sc.title;
+  inspBadge.textContent = 'DEMO';
+  inspBadge.className = 'badge';
+  inspBody.innerHTML = `
+    <div class="insp-lede">${sc.chapo}</div>
+    <div class="insp-meta">
+      <div><span class="lbl">Type</span><span class="val mono">${sc.type.toUpperCase()}</span></div>
+      <div><span class="lbl">Heure</span><span class="val mono">${sc.time}</span></div>
+      <div><span class="lbl">Lieu</span><span class="val">${w.city}</span></div>
+      <div><span class="lbl">Région</span><span class="val">${w.region}</span></div>
+    </div>
+    <div class="section-label">Chapô</div>
+    <p class="insp-para">${sc.paragraphs[0]}</p>
+    <div class="section-label">Corps</div>
+    <p class="insp-para">${sc.paragraphs[1]}</p>
+    <p class="insp-para">${sc.paragraphs[2]}</p>
+    <div class="section-label">Professionnels liés</div>
+    <div>${sc.professionals.map(p=>`<span class="chip"><span class="dot" style="background:${p.code}"></span>${p.name}</span>`).join('')}</div>
+    <div class="section-label">Relations</div>
+    <div class="rel-list">
+      <div class="rel-item"><span class="from">SCÈNE</span><span class="arrow">→</span><span class="to">LIEU · ${w.city}</span></div>
+      <div class="rel-item"><span class="from">SCÈNE</span><span class="arrow">→</span><span class="to">PHOTOGRAPHE</span></div>
+      <div class="rel-item"><span class="from">SCÈNE</span><span class="arrow">→</span><span class="to">TRAITEUR</span></div>
+      <div class="rel-item"><span class="from">SCÈNE</span><span class="arrow">→</span><span class="to">MÉDIA · IMAGE</span></div>
+    </div>
+    <div class="section-label">Retour</div>
+    <button class="chip" id="back-to-wedding" style="cursor:pointer;">
+      <span class="dot" style="background:${w.palette}"></span>← ${w.city} · 24 heures
+    </button>
+  `;
+  const back = document.getElementById('back-to-wedding');
+  if (back) back.addEventListener('click', () => {
+    state.selectedHour = null;
+    updateSelectionVisuals();
+    renderInspector();
+  });
+}
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+(() => {
+  const grid = document.getElementById('legend-grid');
+  const entries = [
+    ['Texte', DMC.text], ['Image', DMC.image], ['Vidéo', DMC.video],
+    ['Audio', DMC.audio], ['Musique', DMC.music], ['Lieu', DMC.place],
+    ['Personne', DMC.person], ['Professionnel', DMC.professional],
+    ['Événement', DMC.event], ['Document', DMC.document],
+    ['Relation', DMC.relation], ['Validé', DMC.validated],
+    ['À confirmer', DMC.toConfirm]
+  ];
+  grid.innerHTML = entries.map(([name,col]) =>
+    `<div class="legend-item"><span class="legend-swatch" style="background:${col}"></span>${name}</div>`
+  ).join('');
+})();
+
+/* =========================================================
+   OVERLAY — TIMELINE
+   ========================================================= */
+
+function renderTimelineOverlay(){
+  const overlay = document.getElementById('overlay');
+  const w = state.selectedWedding || WEDDINGS[0];
+  const active = state.selectedHour;
+
+  let col = '#8B6F47';
+  let pay = '';
+
+  if (state.view === 'timeline'){
+    overlay.innerHTML = `
+      <div class="tm-wrap">
+        <div class="tm-head">
+          <h2>${w.title}</h2>
+          <p>${w.city} · ${w.region} · ${w.monthName} · 24 heures éditoriales · DEMO</p>
+        </div>
+        <div class="tm-grid">
+          ${w.scenes.map(s => `
+            <div class="tm-hour ${s.hour===active?'active':''}" data-hour="${s.hour}">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="tm-dot" style="background:${TYPE_COLOR[s.type]||'#888'}"></span>
+                <span class="tm-time">${s.time}</span>
+              </div>
+              <div class="tm-title">${s.title}</div>
+              <div class="tm-scene">${s.chapo}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    overlay.querySelectorAll('.tm-hour').forEach(el => {
+      el.addEventListener('click', () => {
+        selectHour(parseInt(el.dataset.hour, 10));
+      });
+    });
+  }
+}
+
+/* =========================================================
+   OVERLAY — MAP
+   ========================================================= */
+
+const FRANCE_OUTLINE = [
+  [2.4,51.0],[1.85,50.95],[1.6,50.7],[0.1,49.5],[-1.6,49.65],[-1.6,48.85],
+  [-2.0,48.65],[-4.5,48.4],[-4.1,47.99],[-3.4,47.75],[-2.2,47.3],[-1.15,46.15],
+  [-1.03,45.62],[-1.15,44.66],[-1.56,43.48],[-1.77,43.36],[-0.37,42.8],[-0.05,43.1],
+  [1.6,42.5],[1.6,42.9],[2.35,43.2],[2.9,42.7],[3.17,42.44],[3.88,43.6],
+  [5.37,43.3],[5.93,43.12],[7.26,43.7],[7.5,43.78],[6.63,44.9],[6.87,45.92],
+  [5.98,46.2],[6.02,47.24],[7.75,48.58],[7.94,49.03],[7.43,49.05],[6.9,49.1],
+  [5.9,49.5],[4.72,49.76],[3.97,50.28],[3.06,50.63],[2.4,51.0]
+];
+
+function projectFrance(lon, lat, W, H){
+  const lonMin=-5.8, lonMax=10.2, latMin=41.0, latMax=51.4;
+  const x = ((lon - lonMin) / (lonMax - lonMin)) * W;
+  const y = H - ((lat - latMin) / (latMax - latMin)) * H;
+  return [x, y];
+}
+
+function renderMapOverlay(){
+  const overlay = document.getElementById('overlay');
+  const W = 620, H = 420;
+  const pathPts = FRANCE_OUTLINE.map(([lo,la]) => {
+    const [x,y] = projectFrance(lo,la,W,H);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  const activeWedding = state.selectedWedding;
+
+  overlay.innerHTML = `
+    <div class="map-wrap">
+      <div class="map-panel">
+        <div class="map-title">Cartographie</div>
+        <div class="map-sub">Édition France · 12 territoires démonstrateurs</div>
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="mapglow" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#1c2330" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#0a0d14" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect x="0" y="0" width="${W}" height="${H}" fill="url(#mapglow)"/>
+          <polygon points="${pathPts}" fill="rgba(28,35,48,0.45)" stroke="rgba(212,168,85,0.28)" stroke-width="1.2"/>
+          ${WEDDINGS.map(w => {
+            const [x,y] = projectFrance(w.lon, w.lat, W, H);
+            const active = activeWedding && activeWedding.id === w.id;
+            return `
+              <circle class="city-hit" cx="${x}" cy="${y}" r="18" data-wid="${w.id}"></circle>
+              <circle class="city-dot" cx="${x}" cy="${y}" r="${active?9:5.5}"
+                fill="${w.palette}" stroke="${active?'#f4efe6':'rgba(244,239,230,0.4)'}"
+                stroke-width="${active?2.4:1}" data-wid="${w.id}"/>
+              <text class="city-label" x="${x+12}" y="${y+4}">${w.city}</text>
+            `;
+          }).join('')}
+        </svg>
+      </div>
+      <div class="map-panel" style="display:flex;flex-direction:column;">
+        <div class="map-title">${activeWedding ? activeWedding.city : 'Sélectionnez un territoire'}</div>
+        <div class="map-sub">${activeWedding ? activeWedding.monthName + ' · ' + activeWedding.region + ' · DEMO' : 'Cliquez sur une ville'}</div>
+        ${activeWedding ? `
+          <div class="insp-lede" style="margin-top:8px;">${activeWedding.tagline}</div>
+          <div class="insp-meta" style="margin-top:14px;">
+            <div><span class="lbl">Latitude</span><span class="val mono">${activeWedding.lat.toFixed(3)}</span></div>
+            <div><span class="lbl">Longitude</span><span class="val mono">${activeWedding.lon.toFixed(3)}</span></div>
+            <div><span class="lbl">Mois</span><span class="val">${activeWedding.monthName}</span></div>
+            <div><span class="lbl">Date</span><span class="val">${activeWedding.date}</span></div>
+            <div><span class="lbl">Statut</span><span class="val mono">DEMO</span></div>
+            <div><span class="lbl">Source</span><span class="val mono">WW-DEMO</span></div>
+          </div>
+          <div class="section-label">Heures éditoriales</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;max-height:180px;overflow-y:auto;">
+            ${activeWedding.scenes.map(s => `
+              <span class="chip" data-hour="${s.hour}" style="cursor:pointer;border-radius:4px;">
+                <span class="dot" style="background:${TYPE_COLOR[s.type]||'#888'}"></span>${s.time} · ${s.title}
+              </span>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+
+  overlay.querySelectorAll('[data-wid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const w = WEDDINGS.find(x => x.id === el.dataset.wid);
+      if (w) selectWedding(w);
+    });
+  });
+
+  overlay.querySelectorAll('.chip[data-hour]').forEach(el => {
+    el.addEventListener('click', () => {
+      const h = parseInt(el.dataset.hour, 10);
+      selectHour(h);
+      setView('magazine');
+    });
+  });
+}
+
+/* =========================================================
+   OVERLAY — RELATIONS
+   ========================================================= */
+
+function renderRelationsOverlay(){
+  const overlay = document.getElementById('overlay');
+  const w = state.selectedWedding || WEDDINGS[0];
+  const W = 900, H = 540;
+  const cx = W/2, cy = H/2;
+
+  const nodes = [
+    { id:'wedding', label:`MARIAGE — ${w.city}`, color:w.palette, x:cx, y:cy, r:44 },
+    { id:'place', label:`LIEU — ${w.city}`, color:DMC.place, x:cx, y:cy-190, r:34 },
+    { id:'photographer', label:'PHOTOGRAPHE', color:DMC.image, x:cx+250, y:cy-110, r:30 },
+    { id:'planner', label:'WEDDING PLANNER', color:DMC.professional, x:cx+300, y:cy+20, r:30 },
+    { id:'caterer', label:'TRAITEUR', color:DMC.place, x:cx+230, y:cy+160, r:30 },
+    { id:'florist', label:'FLEURISTE', color:DMC.person, x:cx+40, y:cy+220, r:30 },
+    { id:'dj', label:'DJ', color:DMC.music, x:cx-160, y:cy+200, r:30 },
+    { id:'videographer', label:'VIDÉASTE', color:DMC.video, x:cx-290, y:cy+70, r:30 },
+    { id:'document', label:'DOCUMENT', color:DMC.document, x:cx-260, y:cy-120, r:30 },
+    { id:'media', label:'MÉDIA', color:DMC.image, x:cx-60, y:cy-200, r:30 }
+  ];
+
+  const edges = [
+    ['wedding','place'],['wedding','photographer'],['wedding','planner'],
+    ['wedding','caterer'],['wedding','florist'],['wedding','dj'],
+    ['wedding','videographer'],['wedding','document'],['wedding','media'],
+    ['place','photographer'],['media','photographer'],['media','videographer']
+  ];
+
+  overlay.innerHTML = `
+    <div class="rel-wrap">
+      <div class="rel-head">
+        <h2>Graphe de relations</h2>
+        <p>${w.city} · ${w.monthName} · Le mariage existe une fois, ses liens existent partout · DEMO</p>
+      </div>
+      <div class="rel-diagram">
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;">
+          ${edges.map(([a,b]) => {
+            const A = nodes.find(n=>n.id===a);
+            const B = nodes.find(n=>n.id===b);
+            return `<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}"
+              stroke="rgba(212,168,85,0.18)" stroke-width="1"/>`;
+          }).join('')}
+          ${nodes.map(n => `
+            <g class="rel-node" data-nid="${n.id}">
+              <circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="${n.color}22" stroke="${n.color}" stroke-width="1.5"/>
+              <text x="${n.x}" y="${n.y+4}" text-anchor="middle" style="fill:${n.color};font-size:10.5px;font-weight:600;letter-spacing:0.08em;">${n.label}</text>
+            </g>
+          `).join('')}
+        </svg>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   OVERLAY — MAGAZINE
+   ========================================================= */
+
+function renderMagazineOverlay(){
+  const overlay = document.getElementById('overlay');
+  const w = state.selectedWedding || WEDDINGS[0];
+  const h = state.selectedHour !== null ? state.selectedHour : 18;
+  const sc = w.scenes[h];
+
+  // Gradient hero based on wedding palette
+  const c1 = w.palette;
+  const c2 = TYPE_COLOR[sc.type] || '#4A6FA5';
+  const gradient = `linear-gradient(135deg, ${c1}cc 0%, ${c2}99 55%, #1a2438dd 100%)`;
+
+  overlay.innerHTML = `
+    <div class="mag-wrap">
+      <div class="mag-spread">
+        <div class="mag-page">
+          <div class="mag-kicker">World Wedding Magazine · Édition France</div>
+          <h1 class="mag-title">${sc.title}</h1>
+          <div class="mag-sub">${w.city}, ${w.region} — ${w.monthName}, ${sc.time}</div>
+          <div class="mag-hero" style="background:${gradient};">
+            <div class="mag-hero-num">DEMO · 01 / 12</div>
+            <div class="mag-hero-label">${w.tagline}</div>
+          </div>
+        </div>
+        <div class="mag-page right">
+          <div class="mag-kicker">${sc.su}</div>
+          <div class="mag-body">
+            <p>${sc.paragraphs[0]}</p>
+            <p>${sc.paragraphs[1]}</p>
+            <div class="mag-quote">« ${sc.chapo} »</div>
+            <p>${sc.paragraphs[2]}</p>
+          </div>
+          <div class="mag-caption">
+            <span>${w.city.toUpperCase()} · ${w.region.toUpperCase()}</span>
+            <span>${sc.time} · DEMO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   ANIMATION LOOP
+   ========================================================= */
+
+const clock = new THREE.Clock();
+let pulseT = 0;
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  pulseT += dt;
+
+  // camera transition
+  if (camFrom && camT < 1){
+    camT = Math.min(1, camT + dt * 1.5);
+    const e = easeInOut(camT);
+    camera.position.lerpVectors(camFrom.pos, camTargetPos, e);
+    controls.target.lerpVectors(camFrom.look, camTargetLook, e);
+    if (camT >= 1) camFrom = null;
+  }
+
+  // pulse rings around wedding markers
+  beamGroup.children.forEach(ch => {
+    if (ch.userData.pulse){
+      const r = ch.userData.pulse.ring;
+      const s = 1 + Math.sin(pulseT * 1.6 + ch.position.z) * 0.15;
+      r.scale.set(s, s, s);
+      r.material.opacity = 0.25 + Math.sin(pulseT * 1.6 + ch.position.z) * 0.12;
+    }
+  });
+
+  // selection halo pulse
+  if (selHalo.visible){
+    const s = 1 + Math.sin(pulseT * 3) * 0.12;
+    selHalo.scale.set(s, s, s);
+    selHalo.material.opacity = 0.09 + Math.sin(pulseT * 3) * 0.04;
+  }
+  if (selRing.visible){
+    selRing.rotation.z += dt * 0.6;
+  }
+
+  // rim light subtle orbit
+  rim.position.x = Math.sin(pulseT * 0.25) * 22;
+  rim.position.z = Math.cos(pulseT * 0.25) * 22;
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+function onResize(){
+  const w = window.innerWidth, h = window.innerHeight;
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+/* =========================================================
+   VIEW NAVIGATION WIRING
+   ========================================================= */
+
+document.querySelectorAll('nav.views button').forEach(btn => {
+  btn.addEventListener('click', () => setView(btn.dataset.view));
+});
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+
+renderInspector();
+
+// Initial gentle camera drift-in
+camera.position.set(80, 55, 80);
+camFrom = { pos: camera.position.clone(), look: controls.target.clone() };
+camTargetPos.set(48, 34, 48);
+camTargetLook.set(0, 8, 0);
+camT = 0;
+
+// Hide loading
+setTimeout(() => {
+  document.getElementById('loading').classList.add('hide');
+}, 700);
+
+// Initial selection for demo (January wedding, hour 12 - ceremony)
+setTimeout(() => {
+  selectWedding(WEDDINGS[0]);
+}, 900);
+
+</script>
+</body>
+</html>
