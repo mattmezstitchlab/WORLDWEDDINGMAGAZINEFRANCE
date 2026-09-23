@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World Wedding Magazine — Édition France</title>
+<title>365 éditions — World Wedding Magazine France</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -349,6 +349,103 @@
     .mag-title{font-size:30px;}
     .mag-page{padding:28px 24px;}
   }
+  /* =========================================================
+     365 ÉDITIONS — DESIGN SYSTEM PARTAGÉ
+     ========================================================= */
+  header{
+    height:68px;
+    border-bottom:1px solid rgba(232,228,220,0.08);
+    background:linear-gradient(180deg,rgba(8,9,13,0.97),rgba(8,9,13,0.82));
+  }
+  .brand-mark{border:1px solid rgba(244,222,176,0.38);}
+  nav.views{border-color:rgba(232,228,220,0.1);background:rgba(18,20,26,0.72);}
+  nav.views button.active{color:#11110f;background:linear-gradient(135deg,#e4c27c,#c79a47);}
+  #inspector{background:linear-gradient(155deg,rgba(18,19,22,0.96),rgba(11,12,16,0.94));border-color:rgba(212,168,85,0.18);}
+  #overlay{
+    padding:94px 36px 34px;
+    background:radial-gradient(ellipse at 50% 0%,rgba(44,39,29,0.24),transparent 46%),linear-gradient(180deg,#0d0f13 0%,#08090d 82%);
+  }
+  #overlay.with-inspector{padding-right:410px;}
+  .view-shell{width:min(100%,1360px);margin:0 auto;padding-bottom:28px;}
+  .view-heading{margin:0 0 24px;padding:2px 0 20px;border-bottom:1px solid rgba(232,228,220,0.09);}
+  .view-eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:13px;color:var(--gold-soft);font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;}
+  .eyebrow-rule{width:22px;height:1px;background:var(--gold);box-shadow:0 0 10px rgba(212,168,85,.38);}
+  .eyebrow-divider{color:var(--dim);}
+  .view-heading-row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;}
+  .view-heading h1{font-family:var(--serif);font-size:clamp(27px,3vw,38px);font-weight:700;line-height:1.06;letter-spacing:-.025em;color:var(--text);}
+  .view-heading p{max-width:720px;margin-top:9px;color:var(--text-2);font-size:11px;line-height:1.65;letter-spacing:.035em;}
+  .view-detail{display:flex;align-items:center;gap:10px;flex-shrink:0;padding:8px 0 2px 18px;border-left:1px solid rgba(212,168,85,.35);}
+  .view-detail-number{font-family:var(--serif);font-size:30px;line-height:.9;color:var(--gold-soft);}
+  .view-detail-copy{font-size:8px;line-height:1.5;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+  .tm-wrap{padding:0;}
+  .tm-grid{gap:10px;padding:3px 2px 16px;scrollbar-color:rgba(212,168,85,.35) transparent;}
+  .tm-hour{background:linear-gradient(160deg,rgba(20,21,24,.94),rgba(12,13,17,.9));border-color:rgba(232,228,220,.1);border-radius:7px;}
+  .tm-hour:hover{border-color:rgba(212,168,85,.44);box-shadow:0 12px 28px rgba(0,0,0,.22);}
+  .tm-hour.active{border-color:var(--gold);background:linear-gradient(160deg,rgba(212,168,85,.12),rgba(18,17,14,.92));}
+  .tm-time{color:var(--gold-soft);}
+  .map-wrap{grid-template-columns:minmax(0,1.14fr) minmax(300px,.86fr);gap:16px;height:auto;}
+  .map-panel,.rel-diagram{background:linear-gradient(155deg,rgba(18,20,24,.92),rgba(12,13,17,.88));border-color:rgba(232,228,220,.1);border-radius:9px;box-shadow:0 18px 48px rgba(0,0,0,.18);}
+  .map-panel{padding:22px;min-width:0;}
+  .map-panel svg{max-height:62vh;}
+  .map-title{font-size:21px;}
+  .map-sub{letter-spacing:.16em;}
+  .city-label{fill:#d0c9bb;}
+  .rel-wrap{display:block;}
+  .rel-diagram{padding:18px;overflow:auto;}
+  .rel-diagram svg{max-height:68vh;}
+  .rel-node text{fill:#d7d0c4;}
+  .mag-wrap{max-width:1180px;}
+  .mag-spread{background:linear-gradient(145deg,#171716,#101114);color:var(--text);border:1px solid rgba(212,168,85,.22);border-radius:5px;box-shadow:0 30px 80px rgba(0,0,0,.52);}
+  .mag-page.right{border-left:1px solid rgba(232,228,220,.1);}
+  .mag-kicker{color:#c2a46b;}
+  .mag-title{color:#f0e9dc;}
+  .mag-sub{color:#b5ab9b;}
+  .mag-hero{border:1px solid rgba(232,228,220,.09);}
+  .mag-body{color:#c8c1b5;}
+  .mag-body p:first-of-type::first-letter{color:var(--gold-soft);}
+  .mag-caption{border-top-color:rgba(232,228,220,.12);color:#9f9586;}
+  .mag-quote{color:#dfd2b7;border-left-color:var(--gold);}
+  .mag-hero-num{color:rgba(244,239,230,.9);}
+  @media (max-width:1100px){
+    .stats{display:none;}
+    nav.views{margin-left:auto;}
+    #overlay.with-inspector{padding-right:26px;}
+    body.overlay-view #inspector{display:none;}
+    .map-wrap{grid-template-columns:1fr;}
+    .mag-spread{grid-template-columns:1fr;aspect-ratio:auto;}
+    .mag-page.right{border-left:none;border-top:1px solid rgba(232,228,220,.1);}
+    .mag-hero{min-height:260px;}
+  }
+  @media (max-width:760px){
+    header{height:92px;display:flex;flex-wrap:wrap;align-content:center;justify-content:space-between;gap:6px 12px;padding:7px 12px;}
+    .brand{width:100%;height:34px;gap:9px;}
+    .brand-mark{width:30px;height:30px;font-size:15px;}
+    .brand-title{font-size:11.5px;}
+    .brand-sub{font-size:8px;}
+    nav.views{order:2;width:100%;max-width:100%;margin:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;justify-content:flex-start;}
+    nav.views::-webkit-scrollbar{display:none;}
+    nav.views button{flex:0 0 auto;padding:6px 10px;font-size:9px;letter-spacing:.08em;}
+    .stats{display:none;}
+    #overlay{padding:112px 14px 18px;}
+    #overlay.with-inspector{padding-right:14px;}
+    body.overlay-view #inspector{display:none;}
+    .view-shell{width:100%;padding-bottom:16px;}
+    .view-heading{margin-bottom:18px;padding-bottom:15px;}
+    .view-heading-row{align-items:flex-start;flex-direction:column;gap:14px;}
+    .view-heading h1{font-size:29px;}
+    .view-heading p{font-size:10.5px;}
+    .view-detail{padding-left:12px;}
+    #inspector{right:12px;left:12px;width:auto;top:102px;bottom:12px;}
+    #legend{left:12px;bottom:12px;max-width:calc(100% - 24px);}
+    .map-panel{padding:16px;}
+    .map-panel svg{max-height:none;}
+    .rel-diagram{padding:8px;}
+    .rel-diagram svg{min-width:680px;max-height:none;}
+    .mag-title{font-size:30px;}
+    .mag-page{padding:26px 22px;min-height:330px;}
+    .mag-page.right{min-height:unset;}
+    .mag-body{font-size:12px;}
+  }
 </style>
 </head>
 <body>
@@ -370,12 +467,12 @@
       <div class="brand-sub">Édition France · 2025 · <span class="demo">DEMO</span></div>
     </div>
   </div>
-  <nav class="views">
-    <button data-view="3d" class="active">3D</button>
+  <nav class="views" aria-label="Navigation des éditions">
+    <button data-view="3d" class="active">365 éditions</button>
     <button data-view="grid">Grille</button>
-    <button data-view="timeline">Timeline</button>
-    <button data-view="map">Carte</button>
-    <button data-view="relations">Relations</button>
+    <button data-view="timeline">24 heures</button>
+    <button data-view="map">Territoires</button>
+    <button data-view="relations">Réseau</button>
     <button data-view="magazine">Magazine</button>
   </nav>
   <div class="stats">
@@ -860,6 +957,7 @@ function easeInOut(t){
 
 function setView(v){
   state.view = v;
+  document.body.classList.toggle('overlay-view', v !== '3d' && v !== 'grid');
   document.querySelectorAll('nav.views button').forEach(b => {
     b.classList.toggle('active', b.dataset.view === v);
   });
@@ -877,7 +975,7 @@ function setView(v){
       renderTimelineOverlay();
       overlay.classList.add('active');
       inspector.classList.remove('hidden');
-      overlay.classList.remove('with-inspector');
+      overlay.classList.add('with-inspector');
     } else {
       // animate camera
       const p = VIEW_PRESETS[v];
@@ -1169,6 +1267,25 @@ function renderInspector(){
 })();
 
 /* =========================================================
+   SHARED EDITION PAGE HEADER
+   ========================================================= */
+
+function renderPageHeading(section, title, description, detail = ''){
+  return `
+    <div class="view-heading">
+      <div class="view-eyebrow"><span class="eyebrow-rule"></span>ÉDITION FRANCE · 2025 <span class="eyebrow-divider">/</span> ${section}</div>
+      <div class="view-heading-row">
+        <div>
+          <h1>${title}</h1>
+          <p>${description}</p>
+        </div>
+        ${detail ? `<div class="view-detail">${detail}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
    OVERLAY — TIMELINE
    ========================================================= */
 
@@ -1181,12 +1298,10 @@ function renderTimelineOverlay(){
   let pay = '';
 
   if (state.view === 'timeline'){
+    const description = `${w.city} · ${w.region} · ${w.monthName} · 2025 · DEMO`;
     overlay.innerHTML = `
-      <div class="tm-wrap">
-        <div class="tm-head">
-          <h2>${w.title}</h2>
-          <p>${w.city} · ${w.region} · ${w.monthName} · 24 heures éditoriales · DEMO</p>
-        </div>
+      <div class="view-shell tm-wrap">
+        ${renderPageHeading('24 HEURES', w.title, description, '<span class="view-detail-number">24</span><span class="view-detail-copy">heures<br>éditoriales</span>')}
         <div class="tm-grid">
           ${w.scenes.map(s => `
             <div class="tm-hour ${s.hour===active?'active':''}" data-hour="${s.hour}">
@@ -1241,10 +1356,12 @@ function renderMapOverlay(){
   const activeWedding = state.selectedWedding;
 
   overlay.innerHTML = `
-    <div class="map-wrap">
-      <div class="map-panel">
-        <div class="map-title">Cartographie</div>
-        <div class="map-sub">Édition France · 12 territoires démonstrateurs</div>
+    <div class="view-shell map-page">
+      ${renderPageHeading('TERRITOIRES', 'L’édition, partout en France', `365 jours, ${WEDDINGS.length} territoires démonstrateurs — une même ligne éditoriale.`, '<span class="view-detail-number">365</span><span class="view-detail-copy">jours<br>à raconter</span>')}
+      <div class="map-wrap">
+        <div class="map-panel">
+          <div class="map-title">Carte de l’édition</div>
+          <div class="map-sub">Sélectionnez un territoire pour découvrir son récit</div>
         <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="mapglow" cx="50%" cy="40%" r="60%">
@@ -1289,6 +1406,7 @@ function renderMapOverlay(){
             `).join('')}
           </div>
         ` : ''}
+      </div>
       </div>
     </div>
   `;
@@ -1340,12 +1458,10 @@ function renderRelationsOverlay(){
   ];
 
   overlay.innerHTML = `
-    <div class="rel-wrap">
-      <div class="rel-head">
-        <h2>Graphe de relations</h2>
-        <p>${w.city} · ${w.monthName} · Le mariage existe une fois, ses liens existent partout · DEMO</p>
-      </div>
-      <div class="rel-diagram">
+    <div class="view-shell relations-page">
+      ${renderPageHeading('RÉSEAU ÉDITORIAL', 'Le récit se tisse ensemble', `${w.city} · ${w.monthName} · Un mariage existe une fois, ses liens éditoriaux le relient partout · DEMO`)}
+      <div class="rel-wrap">
+        <div class="rel-diagram">
         <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;">
           ${edges.map(([a,b]) => {
             const A = nodes.find(n=>n.id===a);
@@ -1360,6 +1476,7 @@ function renderRelationsOverlay(){
             </g>
           `).join('')}
         </svg>
+        </div>
       </div>
     </div>
   `;
@@ -1381,14 +1498,16 @@ function renderMagazineOverlay(){
   const gradient = `linear-gradient(135deg, ${c1}cc 0%, ${c2}99 55%, #1a2438dd 100%)`;
 
   overlay.innerHTML = `
-    <div class="mag-wrap">
-      <div class="mag-spread">
+    <div class="view-shell magazine-page">
+      ${renderPageHeading('MAGAZINE', w.city, `${w.region} · ${w.monthName} 2025 · ${sc.time} · ${sc.title}`, '<span class="view-detail-number">365</span><span class="view-detail-copy">jours<br>en édition</span>')}
+      <div class="mag-wrap">
+        <div class="mag-spread">
         <div class="mag-page">
           <div class="mag-kicker">World Wedding Magazine · Édition France</div>
           <h1 class="mag-title">${sc.title}</h1>
           <div class="mag-sub">${w.city}, ${w.region} — ${w.monthName}, ${sc.time}</div>
           <div class="mag-hero" style="background:${gradient};">
-            <div class="mag-hero-num">DEMO · 01 / 12</div>
+            <div class="mag-hero-num">${w.monthName} · ÉDITION 2025</div>
             <div class="mag-hero-label">${w.tagline}</div>
           </div>
         </div>
@@ -1404,6 +1523,7 @@ function renderMagazineOverlay(){
             <span>${w.city.toUpperCase()} · ${w.region.toUpperCase()}</span>
             <span>${sc.time} · DEMO</span>
           </div>
+        </div>
         </div>
       </div>
     </div>
